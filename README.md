@@ -75,43 +75,50 @@ Download source and unpack it.
 Edit Makefile to suit your choice of plugins
 
 Make munin-node by running "make"
-  # make
-  Making munin-node for muninlite version 0.9.14
-  Adding plugin df
-  Adding plugin cpu
-  Adding plugin if_
-  Adding plugin if_err_
-  Adding plugin load
-  Adding plugin memory
-  Adding plugin processes
-  Adding plugin swap
-  Adding plugin netstat
-  Adding plugin uptime
-  Adding plugin interrupts
-  Adding plugin irqstats
+```shell
+$ make
+Making munin-node for muninlite version 0.9.14
+Adding plugin df
+Adding plugin cpu
+Adding plugin if_
+Adding plugin if_err_
+Adding plugin load
+Adding plugin memory
+Adding plugin processes
+Adding plugin swap
+Adding plugin netstat
+Adding plugin uptime
+Adding plugin interrupts
+Adding plugin irqstats
+```
 
 Copy munin-node to a suitable location (/usr/local/bin/) and make it
 executable (there will be a "make install" at a later release)
 
-  # cp munin-node /usr/local/bin
-  # chmod +x /usr/local/bin/munin-node
+```shell
+cp munin-node /usr/local/bin
+chmod +x /usr/local/bin/munin-node
+```
 
-Add munin port to /etc/services
-
-  # echo "munin           4949/tcp        lrrd            # Munin" >>/etc/services
+Add munin port to `/etc/services`:
+```shell
+echo "munin           4949/tcp        lrrd            # Munin" >>/etc/services
+```
 
 Configure inetd or xinetd to fork this script for request on the
 munin port (4949). 
 
-Sample configuration for xinetd is located in examples/xinetd.d/munin
+Sample configuration for xinetd is located in `examples/xinetd.d/munin`:
+```shell
+cp examples/xinetd.d/munin /etc/xinetd.d
+killall -HUP xinetd
+```
 
-  # cp examples/xinetd.d/munin /etc/xinetd.d 
-  # killall -HUP xinetd
-
-Sample configuration for inetd is located in examples/inetd.conf
-
-  # cat examples/inetd.conf >> /etc/inetd.conf
-  # killall -HUP inetd
+Sample configuration for inetd is located in `examples/inetd.conf`:
+```shell
+cat examples/inetd.conf >> /etc/inetd.conf
+killall -HUP inetd
+```
 
 Restrict access to munin port using hosts.allow and
 hosts.deny or add a rule to your favorite firewall config.
@@ -119,43 +126,46 @@ Examples of hosts.allow/deny settings is provided in the examples
 directory.
 
 Iptables might be set with something like this:
-
-  # iptables -A INPUT -p tcp --dport munin --source 10.42.42.25 -j ACCEPT 
+```shell
+iptables -A INPUT -p tcp --dport munin --source 10.42.42.25 -j ACCEPT
+```
 
 Test
 ----
-To test script, just run it (/usr/bin/local/munin-node):
-
-  # /usr/local/bin/munin-node
-  # munin node at localhost.localdomain
-  help
-  # Unknown command. Try list, nodes, config, fetch, version or quit
-  list
-  df cpu if_eth0 if_eth1 if_err_eth0 if_err_eth1 load memory
-  version
-  munins node on mose.medisin.ntnu.no version: 0.0.5 (munin-lite)
-  quit
+To test script, just run it (`/usr/bin/local/munin-node`):
+```shell
+$ /usr/local/bin/munin-node
+# munin node at localhost.localdomain
+help
+# Unknown command. Try list, nodes, config, fetch, version or quit
+list
+df cpu if_eth0 if_eth1 if_err_eth0 if_err_eth1 load memory
+version
+munins node on mose.medisin.ntnu.no version: 0.0.5 (munin-lite)
+quit
+```
 
 For inetd-test, try to telnet to munin port from allowed host.
+```shell
+# telnet localhost 4949
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+# munin node at localhost.localdomain
+help
+# Unknown command. Try list, nodes, config, fetch, version or quit
+list
+df cpu if_eth0 if_eth1 if_err_eth0 if_err_eth1 load memory
+version
+munins node on mose.medisin.ntnu.no version: 0.0.5 (munin-lite)
+quit
+Connection closed by foreign host.
+```
 
-  # telnet localhost 4949
-  Trying 127.0.0.1...
-  Connected to localhost.
-  Escape character is '^]'.
-  # munin node at localhost.localdomain
-  help
-  # Unknown command. Try list, nodes, config, fetch, version or quit
-  list
-  df cpu if_eth0 if_eth1 if_err_eth0 if_err_eth1 load memory
-  version
-  munins node on mose.medisin.ntnu.no version: 0.0.5 (munin-lite)
-  quit
-  Connection closed by foreign host.
 
-
-Plugin configuration 
-------------------------
-To configure which plugins should be enabled, locate the PLUGINS
+Plugin configuration
+--------------------
+To configure which plugins should be enabled, locate the `PLUGINS`
 variable in munin-node and remove unwanted plugins.
 
 There is no specific configuration for plugins. 
@@ -165,7 +175,8 @@ Munin configuration
 Configure your /etc/munin/munin.conf as you would for a regular
 munin-node.
 
+```
 [some.host.tld]
     address 10.42.42.25
     use_node_name yes
-
+```
